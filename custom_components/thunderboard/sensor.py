@@ -4,7 +4,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import callback, HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import DOMAIN, ThunderboardDiagnostics
+from . import DOMAIN, ThunderboardConnectionState, ThunderboardCurrentChannel
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -16,8 +16,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     sensors = [SoundboardSensor(coordinator, sound) for sound in coordinator.data["sounds"]]
     async_add_entities(sensors)
 
-    # Add diagnostics entity
-    async_add_entities([ThunderboardDiagnostics(coordinator)])
+    # Add diagnostics entities
+    async_add_entities([ThunderboardConnectionState(coordinator), ThunderboardCurrentChannel(coordinator)])
 
 class SoundboardSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, sound):

@@ -37,10 +37,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     })
     hass.services.async_register(DOMAIN, "play_sound", coordinator.play_sound, schema=service_schema)
 
-    # Add diagnostics entities
-    async_add_entities = hass.data[DOMAIN][entry.entry_id].async_add_entities
-    async_add_entities([ThunderboardConnectionState(coordinator), ThunderboardCurrentChannel(coordinator)])
-
     return True
 
 class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
