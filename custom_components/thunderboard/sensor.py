@@ -8,6 +8,7 @@ from . import DOMAIN, ThunderboardConnectionState, ThunderboardCurrentChannel
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     """Set up Soundboard sensors from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
@@ -18,6 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
     # Add diagnostics entities
     async_add_entities([ThunderboardConnectionState(coordinator), ThunderboardCurrentChannel(coordinator)])
+
 
 class SoundboardSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator, sound):
@@ -46,10 +48,10 @@ class SoundboardSensor(CoordinatorEntity, SensorEntity):
         """Return device information about this entity."""
         return {
             "identifiers": {(DOMAIN, self.coordinator.config_entry.entry_id)},
-            "name": "Thunderboard",
-            "manufacturer": "Thunderboard Bot",
-            "model": "Thunderboard API",
-            "sw_version": "1.0.2",
+            "name": "Thunderboard Integration",
+            "manufacturer": "Thunderboard Team",
+            "model": "Thunderboard Bot",
+            "sw_version": "1.0.3",
         }
 
     @property

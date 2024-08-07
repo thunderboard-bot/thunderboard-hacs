@@ -4,6 +4,7 @@ from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from .const import DOMAIN
 
+
 @config_entries.HANDLERS.register(DOMAIN)
 class SoundboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Soundboard."""
@@ -27,7 +28,8 @@ class SoundboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Show the configuration form to edit location data."""
         data_schema = vol.Schema(
             {
-                vol.Required("access_token", default=user_input.get("access_token", ""), description="Access Token"): str,
+                vol.Required("access_token", default=user_input.get("access_token", ""),
+                             description="Access Token"): str,
                 vol.Required("service_url", default=user_input.get("service_url", ""), description="Service URL"): str,
             }
         )

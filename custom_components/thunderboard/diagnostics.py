@@ -4,6 +4,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 
+
 class ThunderboardConnectionState(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator):
         """Initialize the connection state sensor."""
@@ -21,16 +22,17 @@ class ThunderboardConnectionState(CoordinatorEntity, SensorEntity):
         """Return device information about this entity."""
         return {
             "identifiers": {(DOMAIN, self.coordinator.config_entry.entry_id)},
-            "name": "Thunderboard",
-            "manufacturer": "Your Company",
-            "model": "Thunderboard Model",
-            "sw_version": "1.0.1",
+            "name": "Thunderboard Integration",
+            "manufacturer": "Thunderboard Team",
+            "model": "Thunderboard Bot",
+            "sw_version": "1.0.3",
         }
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         self.async_write_ha_state()
+
 
 class ThunderboardCurrentChannel(CoordinatorEntity, SensorEntity):
     def __init__(self, coordinator):
@@ -49,10 +51,10 @@ class ThunderboardCurrentChannel(CoordinatorEntity, SensorEntity):
         """Return device information about this entity."""
         return {
             "identifiers": {(DOMAIN, self.coordinator.config_entry.entry_id)},
-            "name": "Thunderboard",
-            "manufacturer": "Your Company",
-            "model": "Thunderboard Model",
-            "sw_version": "1.0.1",
+            "name": "Thunderboard Integration",
+            "manufacturer": "Thunderboard Team",
+            "model": "Thunderboard Bot",
+            "sw_version": "1.0.3",
         }
 
     @callback

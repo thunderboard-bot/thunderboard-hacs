@@ -1,8 +1,8 @@
 {
     "domain": "thunderboard",
     "name": "Thunderboard",
-    "version": "1.0.2",
-    "documentation": "https://www.example.com",
+    "version": "1.0.3",
+    "documentation": "https://github.com/thunderboard-bot/thunderboard-hacs",
     "dependencies": [],
     "iot_class": "cloud_polling",
     "integration_type": "service",

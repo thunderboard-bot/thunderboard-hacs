@@ -1,6 +1,4 @@
 import logging
-import asyncio
-import aiohttp
 import async_timeout
 import voluptuous as vol
 
@@ -11,12 +9,14 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.helpers import config_validation as cv
 
+from custom_components.thunderboard.button import SoundButton
 from custom_components.thunderboard.diagnostics import ThunderboardConnectionState, ThunderboardCurrentChannel
 
 DOMAIN = "thunderboard"
 PLATFORMS = ["sensor"]
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Soundboard from a config entry."""
@@ -37,7 +37,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     })
     hass.services.async_register(DOMAIN, "play_sound", coordinator.play_sound, schema=service_schema)
 
+    # Register sound buttons
+    async_add_entities = hass.helpers.entity_platform.async_add_entities
+    buttons = [SoundButton(coordinator, sound) for sound in coordinator.sounds]
+    async_add_entities(buttons)
+
     return True
+
 
 class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, config):
@@ -47,12 +53,13 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
         self.session = async_get_clientsession(hass)
         self.api_url = config["service_url"]
         self.token = config["access_token"]
+        self.sounds = []
 
         super().__init__(
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(minutes=10),
+            update_interval=timedelta(seconds=30),
         )
 
     async def _async_update_data(self):
@@ -74,13 +81,13 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                 if not isinstance(sound_data, list) or not isinstance(status_data, dict):
                     raise UpdateFailed("Unexpected data format")
 
+                self.sounds = sound_data
                 return {"sounds": sound_data, **status_data}
         except Exception as e:
             raise UpdateFailed(f"Error fetching data: {e}")
 
-    async def play_sound(self, call):
+    async def play_sound(self, sound_id):
         """Play a sound."""
-        sound_id = call.data["sound_id"]
         headers = {
             "Auth-Token": self.token,
             "Content-Type": "application/json"
