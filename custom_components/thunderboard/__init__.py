@@ -2,12 +2,16 @@ import logging
 import asyncio
 import aiohttp
 import async_timeout
+import voluptuous as vol
 
 from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers import config_validation as cv
+
+from custom_components.thunderboard.diagnostics import ThunderboardDiagnostics
 
 DOMAIN = "soundboard"
 PLATFORMS = ["sensor"]
@@ -27,7 +31,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
 
-    hass.services.async_register(DOMAIN, "play_sound", coordinator.play_sound)
+    # Register the play_sound service with schema
+    service_schema = vol.Schema({
+        vol.Required("sound_id"): cv.string,
+    })
+    hass.services.async_register(DOMAIN, "play_sound", coordinator.play_sound, schema=service_schema)
+
+    # Add diagnostics entity
+    async_add_entities = hass.data[DOMAIN][entry.entry_id].async_add_entities
+    async_add_entities([ThunderboardDiagnostics(coordinator)])
 
     return True
 
@@ -55,7 +67,14 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                 async with self.session.get(f"{self.api_url}/api/sound", headers=headers) as response:
                     if response.status != 200:
                         raise UpdateFailed(f"Error fetching data: {response.status}")
-                    return await response.json()
+                    sound_data = await response.json()
+
+                async with self.session.get(f"{self.api_url}/status", headers=headers) as response:
+                    if response.status != 200:
+                        raise UpdateFailed(f"Error fetching status: {response.status}")
+                    status_data = await response.json()
+
+                return {**sound_data, **status_data}
         except Exception as e:
             raise UpdateFailed(f"Error fetching data: {e}")
 

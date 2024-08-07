@@ -17,13 +17,33 @@ class SoundboardSensor(CoordinatorEntity, SensorEntity):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self.sound = sound
-        self._attr_unique_id = f"soundboard_{sound['id']}"
+        self._attr_unique_id = f"thunderboard_{sound['id']}"
         self._attr_name = sound["name"]
 
     @property
     def state(self):
         """Return the state of the sensor."""
         return self.sound["id"]
+
+    @property
+    def extra_state_attributes(self):
+        """Return the state attributes."""
+        return {
+            "submitted_by": self.sound.get("submittedBy"),
+            "tags": self.sound.get("tags", []),
+            "favorite": self.sound.get("favorite", False),
+        }
+
+    @property
+    def device_info(self):
+        """Return device information about this entity."""
+        return {
+            "identifiers": {(DOMAIN, self.coordinator.config_entry.entry_id)},
+            "name": "Thunderboard",
+            "manufacturer": "Thunderboard Bot",
+            "model": "Thunderboard API",
+            "sw_version": "1.0.2",
+        }
 
     @property
     def extra_state_attributes(self):

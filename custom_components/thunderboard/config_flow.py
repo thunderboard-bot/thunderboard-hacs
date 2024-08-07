@@ -27,8 +27,8 @@ class SoundboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Show the configuration form to edit location data."""
         data_schema = vol.Schema(
             {
-                vol.Required("access_token", default=user_input.get("access_token", "")): str,
-                vol.Required("service_url", default=user_input.get("service_url", "")): str,
+                vol.Required("access_token", default=user_input.get("access_token", ""), description="Access Token"): str,
+                vol.Required("service_url", default=user_input.get("service_url", ""), description="Service URL"): str,
             }
         )
 
