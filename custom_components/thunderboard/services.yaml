@@ -1,4 +1,4 @@
-﻿play_sound:
+play_sound:
   description: "Play a sound from the soundboard"
   fields:
     sound_id:

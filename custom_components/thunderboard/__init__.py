@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 import asyncio
 import aiohttp
 import async_timeout

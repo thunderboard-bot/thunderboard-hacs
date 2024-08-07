@@ -1,1 +1,1 @@
-﻿DOMAIN = "thunderboard"
+DOMAIN = "thunderboard"

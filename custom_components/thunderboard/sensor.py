@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
