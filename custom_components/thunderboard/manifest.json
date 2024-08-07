@@ -1,10 +1,11 @@
 {
     "domain": "thunderboard",
     "name": "Thunderboard",
-    "version": "1.0",
+    "version": "1.0.1",
     "documentation": "https://www.example.com",
     "dependencies": [],
     "iot_class": "cloud_polling",
+    "integration_type": "service",
     "codeowners": ["@Tech-Non"],
     "requirements": [],
     "config_flow": true

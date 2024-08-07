@@ -20,7 +20,7 @@ class SoundboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             return await self._validate_and_create_entry(user_input)
 
-        return self._show_config_form(user_input)
+        return self._show_config_form(user_input or {})
 
     @callback
     def _show_config_form(self, user_input):
