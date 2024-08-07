@@ -1,0 +1,6 @@
+﻿{
+  "name": "Thunderboard",
+  "render_readme": true,
+  "hide_default_branch": true,
+  "homeassistant": "2024.7.0"
+}
