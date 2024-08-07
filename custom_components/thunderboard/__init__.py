@@ -14,7 +14,7 @@ from custom_components.thunderboard.button import SoundButton
 from custom_components.thunderboard.diagnostics import ThunderboardConnectionState, ThunderboardCurrentChannel
 
 DOMAIN = "thunderboard"
-PLATFORMS = ["sensor"]
+PLATFORMS = ["sensor", "button"]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -38,12 +38,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     })
     hass.services.async_register(DOMAIN, "play_sound", coordinator.play_sound, schema=service_schema)
 
-    # Register sound buttons
-    platform = async_get_current_platform()
-    buttons = [SoundButton(coordinator, sound) for sound in coordinator.sounds]
-    platform.async_add_entities(buttons)
-
     return True
+
+
+async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, discovery_info=None):
+    """Set up the sound buttons."""
+    coordinator = hass.data[DOMAIN][config.entry_id]
+    buttons = [SoundButton(coordinator, sound) for sound in coordinator.sounds]
+    async_add_entities(buttons)
 
 
 class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
