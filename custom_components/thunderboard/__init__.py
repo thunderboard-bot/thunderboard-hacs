@@ -11,7 +11,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.helpers import config_validation as cv
 
-from custom_components.thunderboard.diagnostics import ThunderboardDiagnostics
+from custom_components.thunderboard.diagnostics import ThunderboardConnectionState, ThunderboardCurrentChannel
 
 DOMAIN = "thunderboard"
 PLATFORMS = ["sensor"]
@@ -36,6 +36,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         vol.Required("sound_id"): cv.string,
     })
     hass.services.async_register(DOMAIN, "play_sound", coordinator.play_sound, schema=service_schema)
+
+    # Add diagnostics entities
+    async_add_entities = hass.data[DOMAIN][entry.entry_id].async_add_entities
+    async_add_entities([ThunderboardConnectionState(coordinator), ThunderboardCurrentChannel(coordinator)])
 
     return True
 
