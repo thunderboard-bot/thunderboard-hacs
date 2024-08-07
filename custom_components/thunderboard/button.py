@@ -1,6 +1,6 @@
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 
 from .const import DOMAIN
 
@@ -25,3 +25,8 @@ class SoundButton(ButtonEntity):
     async def async_press(self) -> None:
         """Press the button."""
         await self.coordinator.play_sound(self.sound["id"])
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self.async_write_ha_state()
