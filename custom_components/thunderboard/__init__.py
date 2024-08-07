@@ -13,7 +13,7 @@ from homeassistant.helpers import config_validation as cv
 
 from custom_components.thunderboard.diagnostics import ThunderboardDiagnostics
 
-DOMAIN = "soundboard"
+DOMAIN = "thunderboard"
 PLATFORMS = ["sensor"]
 
 _LOGGER = logging.getLogger(__name__)

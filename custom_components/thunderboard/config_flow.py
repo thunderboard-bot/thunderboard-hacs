@@ -52,7 +52,7 @@ class SoundboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self._show_config_form(user_input)
 
         return self.async_create_entry(
-            title="Soundboard", data=user_input
+            title="Thunderboard", data=user_input
         )
 
     async def _validate_input(self, data):
