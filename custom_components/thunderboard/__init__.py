@@ -81,9 +81,16 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
     async def play_sound(self, call):
         """Play a sound."""
         sound_id = call.data["sound_id"]
-        headers = {"Auth-Token": self.token}
-        async with self.session.post(f"{self.api_url}/api/sound/{sound_id}/play", headers=headers) as response:
+        headers = {
+            "Auth-Token": self.token,
+            "Content-Type": "application/json"
+        }
+        request_path = f"{self.api_url}/api/sound/{sound_id}/play"
+
+        async with self.session.post(request_path, headers=headers) as response:
             if response.status != 200:
-                _LOGGER.error(f"Error playing sound: {response.status}")
+                error_message = await response.text()
+                _LOGGER.error(f"Failed to play sound: {error_message}")
+                raise Exception(f"Error playing sound: {response.status}")
             else:
-                _LOGGER.info(f"Played sound: {sound_id}")
+                _LOGGER.info(f"Playing sound {sound_id}")
