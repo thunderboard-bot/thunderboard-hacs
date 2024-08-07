@@ -89,8 +89,8 @@ class SoundboardOptionsFlowHandler(config_entries.OptionsFlow):
         """Show the options form to edit options."""
         options_schema = vol.Schema(
             {
-                vol.Required("access_token", default=self.config_entry.options.get("access_token", "")): str,
-                vol.Required("service_url", default=self.config_entry.options.get("service_url", "")): str,
+                vol.Required("access_token", default=self.config_entry.options.get("access_token", ""), description="Access Token"): str,
+                vol.Required("service_url", default=self.config_entry.options.get("service_url", ""), description="Service URL"): str,
             }
         )
 

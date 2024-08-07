@@ -1,6 +1,0 @@
-play_sound:
-  description: "Play a sound from the soundboard"
-  fields:
-    sound_id:
-      description: "The ID of the sound to play"
-      example: "3000"

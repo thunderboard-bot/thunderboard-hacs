@@ -25,7 +25,7 @@ class ThunderboardConnectionState(CoordinatorEntity, SensorEntity):
             "name": "Thunderboard Integration",
             "manufacturer": "Thunderboard Team",
             "model": "Thunderboard Bot",
-            "sw_version": "1.0.3",
+            "sw_version": "1.1.0",
         }
 
     @callback
@@ -54,7 +54,7 @@ class ThunderboardCurrentChannel(CoordinatorEntity, SensorEntity):
             "name": "Thunderboard Integration",
             "manufacturer": "Thunderboard Team",
             "model": "Thunderboard Bot",
-            "sw_version": "1.0.3",
+            "sw_version": "1.1.0",
         }
 
     @callback

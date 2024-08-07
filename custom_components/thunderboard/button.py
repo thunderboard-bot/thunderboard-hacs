@@ -20,7 +20,7 @@ class SoundButton(ButtonEntity):
         self.coordinator = coordinator
         self.sound = sound
         self._attr_name = sound["name"]
-        self._attr_unique_id = sound["id"]
+        self._attr_unique_id = f"thunderboard_{sound['id']}"
 
     async def async_press(self) -> None:
         """Press the button."""

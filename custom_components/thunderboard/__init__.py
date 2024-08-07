@@ -1,14 +1,11 @@
 import logging
 import async_timeout
-import voluptuous as vol
 
 from datetime import timedelta
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.entity_platform import async_get_current_platform
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.helpers import config_validation as cv
 
 from custom_components.thunderboard.button import SoundButton
 from custom_components.thunderboard.diagnostics import ThunderboardConnectionState, ThunderboardCurrentChannel
@@ -31,12 +28,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass.async_add_job(
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
-
-    # Register the play_sound service with schema
-    service_schema = vol.Schema({
-        vol.Required("sound_id"): cv.string,
-    })
-    hass.services.async_register(DOMAIN, "play_sound", coordinator.play_sound, schema=service_schema)
 
     return True
 
