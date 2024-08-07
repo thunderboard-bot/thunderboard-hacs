@@ -1,4 +1,17 @@
 from homeassistant.components.button import ButtonEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+
+from .const import DOMAIN
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
+    """Set up Soundboard sensors from a config entry."""
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+
+    # Create sensor entities
+    sensors = [SoundButton(coordinator, sound) for sound in coordinator.data["sounds"]]
+    async_add_entities(sensors)
 
 
 class SoundButton(ButtonEntity):

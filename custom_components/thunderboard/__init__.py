@@ -41,13 +41,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return True
 
 
-async def async_setup_platform(hass: HomeAssistant, config, async_add_entities, discovery_info=None):
-    """Set up the sound buttons."""
-    coordinator = hass.data[DOMAIN][config.entry_id]
-    buttons = [SoundButton(coordinator, sound) for sound in coordinator.sounds]
-    async_add_entities(buttons)
-
-
 class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, config):
         """Initialize the coordinator."""

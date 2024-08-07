@@ -13,9 +13,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     """Set up Soundboard sensors from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    # Create sensor entities
-    sensors = [SoundboardSensor(coordinator, sound) for sound in coordinator.data["sounds"]]
-    async_add_entities(sensors)
+    # # Create sensor entities
+    # sensors = [SoundboardSensor(coordinator, sound) for sound in coordinator.data["sounds"]]
+    # async_add_entities(sensors)
 
     # Add diagnostics entities
     async_add_entities([ThunderboardConnectionState(coordinator), ThunderboardCurrentChannel(coordinator)])
