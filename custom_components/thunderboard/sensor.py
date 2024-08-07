@@ -1,6 +1,7 @@
 import logging
 from homeassistant.components.sensor import SensorEntity
-from homeassistant.core import callback
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import callback, HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import DOMAIN, ThunderboardDiagnostics

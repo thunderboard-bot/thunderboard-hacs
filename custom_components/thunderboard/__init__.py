@@ -70,7 +70,11 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                         raise UpdateFailed(f"Error fetching status: {response.status}")
                     status_data = await response.json()
 
-                return {**sound_data, **status_data}
+                # Ensure sound_data is a list and status_data is a dictionary
+                if not isinstance(sound_data, list) or not isinstance(status_data, dict):
+                    raise UpdateFailed("Unexpected data format")
+
+                return {"sounds": sound_data, **status_data}
         except Exception as e:
             raise UpdateFailed(f"Error fetching data: {e}")
 
