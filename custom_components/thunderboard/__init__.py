@@ -17,11 +17,11 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Soundboard from a config entry."""
     hass.data.setdefault(DOMAIN, {})
-    coordinator = SoundboardDataUpdateCoordinator(hass, entry)
+    dev_reg = await dr.async_get(hass)
+
+    hass.data[DOMAIN][entry.entry_id] = coordinator = SoundboardDataUpdateCoordinator(hass, entry, dev_reg=dev_reg)
+
     await coordinator.async_config_entry_first_refresh()
-
-    hass.data[DOMAIN][entry.entry_id] = coordinator
-
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
@@ -36,7 +36,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
     """Data update coordinator for Soundboard."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+    def __init__(self, hass: HomeAssistant, entry: ConfigEntry, dev_reg: dr.DeviceRegistry) -> None:
         """Initialize the coordinator."""
         self.hass = hass
         self.config_entry = entry
@@ -46,7 +46,7 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
         self.sounds = []
         self.entities = []
         self.data = {"sounds": [], "status": {}}
-        self._device_registry = dr.async_get(hass)
+        self._device_registry = dev_reg
 
         super().__init__(
             hass,
@@ -55,7 +55,7 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=COORDINATOR_UPDATE_INTERVAL,
         )
 
-    async def _async_update_data(self):
+    async def _async_update_data(self) -> dict | None:
         """Fetch data from API."""
         try:
             async with async_timeout.timeout(10):
@@ -78,24 +78,34 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                 if not isinstance(sound_data, list) or not isinstance(status_data, dict):
                     raise UpdateFailed("Unexpected data format")
 
-                # Update sounds and notify entities if there are new sounds
-                if sound_data != self.sounds:
-                    new_sounds = [sound for sound in sound_data if sound not in self.sounds]
-                    self.sounds = sound_data
-                    self.async_update_listeners()
-                    self._add_new_entities(new_sounds)
+                current_sounds = {
+                    list(device.identifiers)[0][1]
+                    for device in dr.async_entries_for_config_entry(
+                        self._device_registry, self.config_entry.entry_id
+                    )
+                }
+                new_sounds = {str(sound["id"]) for sound in sound_data}
+                if stale_sounds := current_sounds - new_sounds:
+                    for sound_id in stale_sounds:
+                        if device := self._device_registry.async_get_device(
+                                {(DOMAIN, sound_id)}
+                        ):
+                            self._device_registry.async_remove_device(device.id)
+
+                # If there are new sounds, reload the config entry so we can
+                # create new devices and entities.
+                if self.data and new_sounds - {
+                    str(sound["id"]) for sound in self.data["sounds"]
+                }:
+                    self.hass.async_create_task(
+                        self.hass.config_entries.async_reload(self.config_entry.entry_id)
+                    )
+                    return None
 
                 self.data = {"sounds": sound_data, **status_data}
                 return self.data
         except Exception as e:
             raise UpdateFailed(f"Error fetching data: {e}")
-
-    def _add_new_entities(self, new_sounds):
-        """Add new sound entities."""
-        if new_sounds:
-            new_entities = [SoundButton(self, sound) for sound in new_sounds]
-            self.entities.extend(new_entities)
-            self.hass.add_job(self.hass.config_entries.async_forward_entry_setup(self.config_entry, "button"))
 
     async def play_sound(self, sound_id):
         """Play a sound."""

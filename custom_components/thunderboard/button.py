@@ -27,7 +27,7 @@ class SoundButton(CoordinatorEntity, ButtonEntity):
         self.coordinator = coordinator
         self.sound = sound
         self._attr_name = sound["name"]
-        self._attr_unique_id = f"thunderboard_{sound['id']}"
+        self._attr_unique_id = f"button.thunderboard_{sound['id']}"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, coordinator.config_entry.entry_id)},
             "name": "Thunderboard Device",
