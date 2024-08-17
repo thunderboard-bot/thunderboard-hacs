@@ -17,7 +17,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Soundboard from a config entry."""
     hass.data.setdefault(DOMAIN, {})
-    dev_reg = await dr.async_get(hass)
+    dev_reg = dr.async_get(hass)
 
     hass.data[DOMAIN][entry.entry_id] = coordinator = SoundboardDataUpdateCoordinator(hass, entry, dev_reg=dev_reg)
 
