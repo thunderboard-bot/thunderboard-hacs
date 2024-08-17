@@ -63,11 +63,15 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
             async with async_timeout.timeout(10):
                 headers = {"Auth-Token": self.token}
                 async with self.session.get(f"{self.api_url}/api/sound", headers=headers) as response:
+                    if response.status == 404:
+                        raise UpdateFailed("Error fetching data: 404 Not Found")
                     if response.status != 200:
                         raise UpdateFailed(f"Error fetching data: {response.status}")
                     sound_data = await response.json()
 
                 async with self.session.get(f"{self.api_url}/status", headers=headers) as response:
+                    if response.status == 404:
+                        raise UpdateFailed("Error fetching status: 404 Not Found")
                     if response.status != 200:
                         raise UpdateFailed(f"Error fetching status: {response.status}")
                     status_data = await response.json()

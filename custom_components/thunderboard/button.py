@@ -2,21 +2,35 @@ from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.device_registry import async_get_registry
 
 from .const import DOMAIN
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
-    """Set up Soundboard sensors from a config entry."""
+    """Set up Soundboard buttons from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    # Create initial sensor entities
-    sensors = [SoundButton(coordinator, sound) for sound in coordinator.data["sounds"]]
-    async_add_entities(sensors)
+    # Ensure coordinator.data is initialized
+    if coordinator.data is None:
+        coordinator.data = {"sounds": []}
+
+    # Create initial button entities
+    buttons = [SoundButton(coordinator, sound) for sound in coordinator.data["sounds"]]
+    async_add_entities(buttons)
 
     # Register the method to add new entities
-    coordinator.entities = sensors
     coordinator.async_add_entities = async_add_entities
+
+    # Register the device
+    device_registry = await async_get_registry(hass)
+    device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, entry.entry_id)},
+        manufacturer="Thunderboard",
+        name="Thunderboard Device",
+        model="Soundboard",
+    )
 
 
 class SoundButton(CoordinatorEntity, ButtonEntity):
@@ -27,6 +41,12 @@ class SoundButton(CoordinatorEntity, ButtonEntity):
         self.sound = sound
         self._attr_name = sound["name"]
         self._attr_unique_id = f"thunderboard_{sound['id']}"
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, coordinator.config_entry.entry_id)},
+            "name": "Thunderboard Device",
+            "manufacturer": "Thunderboard",
+            "model": "Soundboard",
+        }
 
     async def async_press(self) -> None:
         """Press the button."""
