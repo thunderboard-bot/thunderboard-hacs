@@ -1,11 +1,12 @@
 from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
     """Set up Soundboard buttons from a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
@@ -28,6 +29,7 @@ class SoundButton(CoordinatorEntity, ButtonEntity):
         self.sound = sound
         self._attr_name = sound["name"]
         self._attr_unique_id = f"button.thunderboard_{sound['id']}"
+        self.entity_id = self._attr_unique_id
         self._attr_device_info = {
             "identifiers": {(DOMAIN, coordinator.config_entry.entry_id)},
             "name": "Thunderboard Device",
