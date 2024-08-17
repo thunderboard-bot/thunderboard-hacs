@@ -3,6 +3,7 @@ import logging
 import async_timeout
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_URL, CONF_ACCESS_TOKEN
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -40,8 +41,8 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
         self.hass = hass
         self.config_entry = entry
         self.session = async_get_clientsession(hass)
-        self.api_url = entry.data["service_url"]
-        self.token = entry.data["access_token"]
+        self.api_url = entry.data[CONF_URL]
+        self.token = entry.data[CONF_ACCESS_TOKEN]
         self.sounds = []
         self.entities = []
         self.data = {"sounds": [], "status": {}}
