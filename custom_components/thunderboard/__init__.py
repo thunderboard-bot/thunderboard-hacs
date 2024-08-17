@@ -29,6 +29,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.config_entries.async_forward_entry_setup(entry, component)
         )
 
+    async def handle_reconfigure(call):
+        """Handle the service call to reconfigure the integration."""
+        await coordinator.reconfigure()
+
+    hass.services.async_register(DOMAIN, "reconfigure", handle_reconfigure)
+
     return True
 
 
@@ -102,3 +108,16 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                 raise Exception(f"Error playing sound: {response.status}")
             else:
                 _LOGGER.info(f"Playing sound {sound_id}")
+
+    async def reconfigure(self):
+        """Reconfigure the integration by clearing and re-adding entities."""
+        # Clear existing entities
+        for entity in self.entities:
+            await entity.async_remove()
+        self.entities.clear()
+
+        # Refresh data and re-add entities
+        await self.async_refresh()
+        new_entities = [SoundButton(self, sound) for sound in self.sounds]
+        self.entities.extend(new_entities)
+        self.hass.config_entries.async_forward_entry_setup(self.config, "button")
