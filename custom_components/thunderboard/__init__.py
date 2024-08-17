@@ -41,6 +41,7 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
         self.api_url = config["service_url"]
         self.token = config["access_token"]
         self.sounds = []
+        self.entities = []
 
         super().__init__(
             hass,
@@ -68,10 +69,23 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                 if not isinstance(sound_data, list) or not isinstance(status_data, dict):
                     raise UpdateFailed("Unexpected data format")
 
-                self.sounds = sound_data
+                # Update sounds and notify entities if there are new sounds
+                if sound_data != self.sounds:
+                    new_sounds = [sound for sound in sound_data if sound not in self.sounds]
+                    self.sounds = sound_data
+                    self.async_update_listeners()
+                    self._add_new_entities(new_sounds)
+
                 return {"sounds": sound_data, **status_data}
         except Exception as e:
             raise UpdateFailed(f"Error fetching data: {e}")
+
+    def _add_new_entities(self, new_sounds):
+        """Add new sound entities."""
+        if new_sounds:
+            new_entities = [SoundButton(self, sound) for sound in new_sounds]
+            self.entities.extend(new_entities)
+            self.hass.add_job(self.hass.config_entries.async_forward_entry_setup(self.config, "button"))
 
     async def play_sound(self, sound_id):
         """Play a sound."""
