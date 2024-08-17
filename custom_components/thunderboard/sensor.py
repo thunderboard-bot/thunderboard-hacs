@@ -4,7 +4,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import callback, HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from . import DOMAIN, ThunderboardConnectionState, ThunderboardCurrentChannel
+from . import DOMAIN
+from .diagnostics import ThunderboardConnectionState, ThunderboardCurrentChannel
 
 _LOGGER = logging.getLogger(__name__)
 

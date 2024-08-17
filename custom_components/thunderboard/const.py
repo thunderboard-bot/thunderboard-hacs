@@ -9,4 +9,4 @@ LOGGER: Logger = getLogger(__package__)
 COORDINATOR_UPDATE_INTERVAL: timedelta = timedelta(seconds=30)
 
 DOMAIN = "thunderboard"
-PLATFORMS: Final = [Platform.BUTTON]
+PLATFORMS: Final = [Platform.SENSOR, Platform.BUTTON]
