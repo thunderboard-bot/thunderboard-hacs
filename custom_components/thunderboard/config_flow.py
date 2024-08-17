@@ -1,9 +1,8 @@
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv
+from homeassistant.const import CONF_ACCESS_TOKEN, CONF_URL
 from .const import DOMAIN
-
 
 @config_entries.HANDLERS.register(DOMAIN)
 class SoundboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -28,14 +27,19 @@ class SoundboardConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Show the configuration form to edit location data."""
         data_schema = vol.Schema(
             {
-                vol.Required("access_token", default=user_input.get("access_token", ""),
-                             description="Access Token"): str,
-                vol.Required("service_url", default=user_input.get("service_url", ""), description="Service URL"): str,
+                vol.Required(CONF_ACCESS_TOKEN, default=user_input.get(CONF_ACCESS_TOKEN, "")): str,
+                vol.Required(CONF_URL, default=user_input.get(CONF_URL, "")): str,
             }
         )
 
         return self.async_show_form(
-            step_id="user", data_schema=data_schema, errors=self._errors
+            step_id="user",
+            data_schema=data_schema,
+            errors=self._errors,
+            description_placeholders={
+                "access_token": self.hass.data[DOMAIN].get("access_token", ""),
+                "service_url": self.hass.data[DOMAIN].get("service_url", "")
+            }
         )
 
     async def _validate_and_create_entry(self, user_input):
@@ -89,8 +93,8 @@ class SoundboardOptionsFlowHandler(config_entries.OptionsFlow):
         """Show the options form to edit options."""
         options_schema = vol.Schema(
             {
-                vol.Required("access_token", default=self.config_entry.options.get("access_token", ""), description="Access Token"): str,
-                vol.Required("service_url", default=self.config_entry.options.get("service_url", ""), description="Service URL"): str,
+                vol.Required(CONF_ACCESS_TOKEN, default=self.config_entry.options.get(CONF_ACCESS_TOKEN, "")): str,
+                vol.Required(CONF_URL, default=self.config_entry.options.get(CONF_URL, "")): str,
             }
         )
 

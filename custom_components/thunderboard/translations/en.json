@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "access_token": "Access Token",
+          "service_url": "Service URL"
+        },
+        "description": "Please enter the access token and service URL to configure the Thunderboard integration."
+      }
+    }
+  }
+}
