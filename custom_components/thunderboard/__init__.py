@@ -48,6 +48,7 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
         self.token = config["access_token"]
         self.sounds = []
         self.entities = []
+        self.data = {"sounds": [], "status": {}}
 
         super().__init__(
             hass,
@@ -82,7 +83,8 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                     self.async_update_listeners()
                     self._add_new_entities(new_sounds)
 
-                return {"sounds": sound_data, **status_data}
+                self.data = {"sounds": sound_data, **status_data}
+                return self.data
         except Exception as e:
             raise UpdateFailed(f"Error fetching data: {e}")
 
