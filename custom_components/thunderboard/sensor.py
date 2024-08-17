@@ -18,10 +18,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     async_add_entities([
         ThunderboardConnectionState(coordinator,
                                     SensorEntityDescription(
+                                        key="thunderboard_connection_state",
                                         entity_category=EntityCategory.DIAGNOSTIC
                                     )),
         ThunderboardCurrentChannel(coordinator,
                                    SensorEntityDescription(
-                                       entity_category=EntityCategory.DIAGNOSTIC
+                                        key="thunderboard_current_channel",
+                                        entity_category=EntityCategory.DIAGNOSTIC
                                    ))]
     )
