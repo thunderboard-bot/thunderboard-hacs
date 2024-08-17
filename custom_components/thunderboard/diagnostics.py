@@ -1,4 +1,5 @@
-﻿from homeassistant.components.sensor import SensorEntity
+﻿from homeassistant.components.fjaraskupan.binary_sensor import EntityDescription
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -6,9 +7,9 @@ from .const import DOMAIN
 
 
 class ThunderboardConnectionState(CoordinatorEntity, SensorEntity):
-    def __init__(self, coordinator):
+    def __init__(self, coordinator, description: EntityDescription):
         """Initialize the connection state sensor."""
-        super().__init__(coordinator)
+        super().__init__(coordinator, description)
         self._attr_unique_id = f"thunderboard_connection_state"
         self._attr_name = "Thunderboard Connection State"
 
@@ -35,9 +36,9 @@ class ThunderboardConnectionState(CoordinatorEntity, SensorEntity):
 
 
 class ThunderboardCurrentChannel(CoordinatorEntity, SensorEntity):
-    def __init__(self, coordinator):
+    def __init__(self, coordinator, description: EntityDescription):
         """Initialize the current channel sensor."""
-        super().__init__(coordinator)
+        super().__init__(coordinator, description)
         self._attr_unique_id = f"thunderboard_current_channel"
         self._attr_name = "Thunderboard Current Channel"
 
