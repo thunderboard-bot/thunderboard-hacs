@@ -2,7 +2,6 @@ from homeassistant.components.button import ButtonEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.helpers import device_registry as dr
 
 from .const import DOMAIN
 
@@ -20,16 +19,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 
     # Register the method to add new entities
     coordinator.async_add_entities = async_add_entities
-
-    # Register the device
-    device_registry = dr.async_get(hass)
-    device_registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        identifiers={(DOMAIN, entry.entry_id)},
-        manufacturer="Thunderboard",
-        name="Thunderboard Device",
-        model="Soundboard",
-    )
 
 class SoundButton(CoordinatorEntity, ButtonEntity):
     def __init__(self, coordinator, sound):
