@@ -80,9 +80,7 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
 
                 current_sounds = {
                     str(entity.unique_id)
-                    for entity in self._device_registry.async_entries_for_config_entry(
-                        self.config_entry.entry_id
-                    )
+                    for entity in self.entities
                 }
                 new_sounds = {str(sound["id"]) for sound in sound_data}
                 _LOGGER.debug(f"Current sounds: {current_sounds}")
