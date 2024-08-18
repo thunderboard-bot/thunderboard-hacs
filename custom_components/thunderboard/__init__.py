@@ -79,9 +79,9 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                     raise UpdateFailed("Unexpected data format")
 
                 current_sounds = {
-                    list(device.identifiers)[0][1]
-                    for device in dr.async_entries_for_config_entry(
-                        self._device_registry, self.config_entry.entry_id
+                    str(entity.unique_id)
+                    for entity in self._device_registry.async_entries_for_config_entry(
+                        self.config_entry.entry_id
                     )
                 }
                 new_sounds = {str(sound["id"]) for sound in sound_data}
