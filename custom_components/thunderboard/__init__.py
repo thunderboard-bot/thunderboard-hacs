@@ -85,7 +85,11 @@ class SoundboardDataUpdateCoordinator(DataUpdateCoordinator):
                     )
                 }
                 new_sounds = {str(sound["id"]) for sound in sound_data}
+                _LOGGER.debug(f"Current sounds: {current_sounds}")
+                _LOGGER.debug(f"New sounds: {new_sounds}")
+
                 if stale_sounds := current_sounds - new_sounds:
+                    _LOGGER.debug(f"Stale sounds: {stale_sounds}")
                     for sound_id in stale_sounds:
                         if device := self._device_registry.async_get_device(
                                 {(DOMAIN, sound_id)}

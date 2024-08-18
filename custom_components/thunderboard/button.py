@@ -37,6 +37,17 @@ class SoundButton(CoordinatorEntity, ButtonEntity):
             "model": "Soundboard",
         }
 
+    @property
+    def device_info(self):
+        """Return device information about this entity."""
+        return {
+            "identifiers": {(DOMAIN, self.coordinator.config_entry.entry_id)},
+            "name": "Thunderboard Integration",
+            "manufacturer": "Thunderboard Team",
+            "model": "Thunderboard Bot",
+            "sw_version": "1.1.0",
+        }
+
     async def async_press(self) -> None:
         """Press the button."""
         await self.coordinator.play_sound(self.sound["id"])

@@ -12,6 +12,12 @@ class ThunderboardConnectionState(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator, description)
         self._attr_unique_id = f"thunderboard_connection_state"
         self._attr_name = "Thunderboard Connection State"
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, coordinator.config_entry.entry_id)},
+            "name": "Thunderboard Device",
+            "manufacturer": "Thunderboard",
+            "model": "Soundboard",
+        }
 
     @property
     def state(self):
@@ -41,6 +47,12 @@ class ThunderboardCurrentChannel(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator, description)
         self._attr_unique_id = f"thunderboard_current_channel"
         self._attr_name = "Thunderboard Current Channel"
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, coordinator.config_entry.entry_id)},
+            "name": "Thunderboard Device",
+            "manufacturer": "Thunderboard",
+            "model": "Soundboard",
+        }
 
     @property
     def state(self):
